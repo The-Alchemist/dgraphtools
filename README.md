@@ -12,6 +12,7 @@ Start testing the translation between the data and string
 representation of the query by starting the `querybuilder` tool.
 
 ```bash
+$ go get -u mooncamp.com/dgraphtools/cmd/dgraphtools
 $ dgraphtools querybuilder
 ```
 
