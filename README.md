@@ -13,7 +13,7 @@ representation of the query by starting the `querybuilder` tool.
 
 ```bash
 $ dgraphtools querybuilder
-`
+```
 
 We find that using the data representation over the string form gives
 us several advantages. When defining queries, we realized that
@@ -32,7 +32,7 @@ query {
 	initial_release_date
    }
 }
-`
+```
 
 ### Data Representation in Go
 ```Go
@@ -51,7 +51,7 @@ gql.GraphQuery{
 		{Attr: "initial_release_date"},
 	},
 }
-`
+```
 
 ## Moving Query Ownership to the Frontend
 
@@ -63,7 +63,7 @@ client offers great flexibility and should therefore be the preferable
 option. Using the data representation the backend now has access to
 every aspect of the query.
 
-This project comes with an example implementation of how how minimal
+This project comes with an example implementation of how minimal
 access restriction could be implemented. The approach assumes that any
 identity accessing the graph is stored in the graph itself and that
 there are no edges connecting the network of the identity itself and
@@ -99,11 +99,11 @@ relationships within dgraph.
 
 Although the rendering code is pretty well tested using the actual
 dgraph tests as an inspiration there could still be bugs which could
-also potentially lead to security issues. Luckily we can use the
-dgraph query parser as a source of truth, meaning any bug in the
-rendering code will be detected right away. We are actually testing
-any query coming from the client for potential issues and return 500
-if the query couldn't be verified.
+potentially lead to security issues. Luckily we can use the dgraph
+query parser as a source of truth, meaning any bug in the rendering
+code will be detected right away. We are actually testing any query
+coming from the client for potential issues and return 500 if the
+query couldn't be verified.
 
 ## Example Application
 
