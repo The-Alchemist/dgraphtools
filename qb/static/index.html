@@ -1,0 +1,128 @@
+<html>
+  <head>
+    <title>Dgraph Query Language Translator</title>
+    <style>
+      .input {
+	  display: grid;
+	  grid-template-columns: 50% 50%;
+	  grid-template-areas:
+	      "template data";
+      }
+
+      .input .template {
+	  grid-area: template;
+      }
+
+      .input .data {
+	  grid-area: data;
+      }
+
+      textarea {
+	  width: 95%;
+	  height: 40rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="input">
+      <div class="template">
+	<h4>template</h4>
+	<textarea>
+	</textarea>
+	<button id="translate-template">translate</button>
+      </div>
+
+      <div class="data">
+	<h4>data</h4>
+	<textarea>
+[
+  {
+    "alias": "bladerunner",
+    "func": {
+      "attr": "name",
+      "lang": "en",
+      "name": "eq",
+      "args": [
+	{
+	  "value": "Blade Runner"
+	}
+      ]
+    },
+    "children": [
+      {
+	"attr": "uid"
+      },
+      {
+	"attr": "name",
+	"langs": [
+	  "en"
+	]
+      },
+      {
+	"attr": "initial_release_date"
+      },
+      {
+	"attr": "netflix_id"
+      }
+    ]
+  }
+]
+	</textarea>
+	<button id="translate-data">translate</button>
+      </div>
+    </div>
+  </body>
+  <script>
+    function setTemplateHandler() {
+	document.getElementById("translate-template").onclick = () => {
+	    let text = document
+		.getElementsByClassName("input")[0]
+		.getElementsByClassName("template")[0]
+		.getElementsByTagName("textarea")[0]
+		.value;
+
+	    fetch("/api/v1/parse", {
+		method: "POST",
+		body: JSON.stringify({
+		    query: text,
+		    variables: {},
+		}),
+	    }).then(resp => resp.json()).then(data => {
+		document
+		    .getElementsByClassName("input")[0]
+		    .getElementsByClassName("data")[0]
+		    .getElementsByTagName("textarea")[0]
+		    .value = JSON.stringify(data, null, 2);
+	    });
+	};
+    }
+
+    function setDataHandler() {
+	document.getElementById("translate-data").onclick = () => {
+	    let text = document
+		.getElementsByClassName("input")[0]
+		.getElementsByClassName("data")[0]
+		.getElementsByTagName("textarea")[0]
+		.value;
+
+	    fetch("/api/v1/template", {
+		method: "POST",
+		body: JSON.stringify({
+		    queries: JSON.parse(text),
+		    alias: "",
+		    variables: {},
+		}),
+	    }).then(resp => resp.text()).then(data => {
+		document
+		    .getElementsByClassName("input")[0]
+		    .getElementsByClassName("template")[0]
+		    .getElementsByTagName("textarea")[0]
+		    .value = data;
+	    });
+	};
+    }
+
+    setTemplateHandler();
+    setDataHandler();
+  </script>
+</html>

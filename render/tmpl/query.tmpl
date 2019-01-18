@@ -1,0 +1,54 @@
+{{- define "var" -}}
+{{ if .Var }}{{ .Var }} as {{ end }}
+{{- end -}}
+
+{{- define "pred" -}}
+pred: {{ .Attr }}
+{{- end -}}
+
+{{- define "count" -}}
+count({{ .Attr }} {{ .Filter | filter }})
+{{- end -}}
+
+{{- define "alias" -}}
+{{- if .Alias -}}
+{{ .Alias }}:
+{{- end -}}
+{{- end -}}
+
+{{- define "normalize" -}}
+{{- if .Normalize -}}
+@normalize
+{{- end -}}
+{{- end -}}
+
+{{- define "node" -}}
+{{- if .Func }}
+{{ template "var" . }}{{ . | fn }}{{ . | internalFn }} {{ .Filter | filter }} {{ template "normalize" . }} {{ . | groupBy }}
+{{- else if .MathExp }}
+{{ template "var" .}}{{ math .MathExp }}
+{{- else if eq .Attr "val"}}
+{{ template "alias" . }}{{ .Attr }}({{ .NeedsVar | listjoin ".Name" "," }})
+{{- else if eq .Alias "pred" }}
+{{ template "var" .}}{{ template "pred" . }}
+{{- else if eq .Alias "shortest" }}
+{{ template "var" .}}{{ . | shortest }}
+{{- else if .IsCount }}
+{{ template "alias" . }}{{ template "var" .}}{{ template "count" . }}
+{{- else }}
+{{ template "var" .}}{{ . | attribute }} {{ .Filter | filter }} {{ . | groupBy }} {{ . | facets }} {{ . | facetsFilter }}
+{{- end }}
+
+{{- if .Children }} { {{- end }}
+
+   {{- range .Children }}
+{{ include "node" . | indent 2 }}
+   {{- end }}
+{{ if .Children }} } {{ end }}
+{{- end -}}
+
+query {{ .Alias}} {{ if .Variables }}({{ .Variables | graphqlVariables }}){{ end }} {
+{{- range .Queries }}
+{{- include "node" . | indent 2 }}
+{{- end }}
+}
