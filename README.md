@@ -4,7 +4,7 @@ tools for.
 
 ## Query Rendering
 
-DgraphTools allows you to render GraphQL+- queries based on it's data
+DgraphTools allows you to render GraphQL+- queries based on its data
 representation. The types for the data representation are mostly
 copied from the `github.com/dgraph-io/dgraph/gql` package.
 
